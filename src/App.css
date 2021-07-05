@@ -36,3 +36,16 @@
     transform: rotate(360deg);
   }
 }
+
+.toolbar-btn {
+  background: transparent;
+  color: white;
+  -moz-outline: 0;
+  outline: none;
+  border: 0;
+  line-height: 1;
+  cursor: pointer;
+  text-align: left;
+  margin: 4px 2px;
+  padding: 0;
+}

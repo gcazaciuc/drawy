@@ -1,4 +1,4 @@
-export const PEN_TOOL = 'pen_tool';
-export const CIRCLE_TOOL = 'circle_tool';
-export const RECTANGLE_TOOL = 'rectangle_tool';
-export const LINE_TOOL = 'line_tool';
+export const PEN_TOOL = 'path';
+export const CIRCLE_TOOL = 'circle';
+export const RECTANGLE_TOOL = 'rectangle';
+export const LINE_TOOL = 'line';
