@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { PEN_TOOL } from "../constants/constants";
 import { IShape, Point, ShapeType } from "../types/Geometry";
 import { Rectangle } from "./Rectangle";
@@ -7,8 +7,20 @@ import { Circle } from "./Circle";
 import { Toolbar } from "./Toolbar";
 import { Line } from "./Line";
 import pointInPolygon from 'point-in-polygon';
+import pointLineDistance from 'point-line-distance';
 import { EditShape } from "./EditShape";
 
+const pointInCircle = (point: Point, points: Point[]) => {
+    const [start, end] = points;
+    const radius = Math.sqrt(Math.pow((end[0] - start[0]),2) + Math.pow(end[1] - start[1], 2));
+    const distanceToCenter = Math.sqrt(Math.pow((point[0] - start[0]),2) + Math.pow(point[1] - start[1], 2));
+
+    return distanceToCenter <= radius;
+}
+
+const pointInLine = (point: Point, points: Point[]) => {
+    return pointLineDistance(point.concat([0]), points[0].concat([0]), points[1].concat([0])) < 5;
+}
 export const Editor = () => {
     const [currentDrawingPoints, setCurrentDrawingPoints] = useState<ShapeType>([]);
     const [previewPoint, setPreviewPoint] = useState<Point | null>(null);
@@ -77,7 +89,11 @@ export const Editor = () => {
                                 [shape.points[0][0], shape.points[1][1]],
                                 shape.points[1],
                                 [shape.points[1][0], shape.points[0][1]]
-                            ])
+                            ]);
+                        case 'circle':
+                            return pointInCircle(point, shape.points);
+                        case 'line':
+                            return pointInLine(point, shape.points);
                     }
                 });
                 if (selectedShape) {
@@ -124,6 +140,19 @@ export const Editor = () => {
         setDraggedPoint(null);
     }
 
+    const handleKeyPresses = (e: React.KeyboardEvent) => {
+        console.log('Key pressed', e.key);
+        switch(e.key) {
+            case 'Backspace':
+                if (editedShape) {
+                    setShapes(shapes.filter((s) => s.id !== editedShape.id));
+                    setEditedShape(null);
+                    setDraggedPoint(null);
+                }
+                break;
+        }
+    }
+
     const renderShape = (shape: IShape, isClosed: boolean = true) => {
         switch(shape.type) {
             case 'path':
@@ -142,13 +171,13 @@ export const Editor = () => {
 
     const previewPoints = previewPoint ? currentDrawingPoints.concat([previewPoint]) : currentDrawingPoints;
     return (
-    <div>
-        <Toolbar onSelectTool={onSelectTool} selectedTool={selectedTool} />
-        <svg height="400" width="400" onClick={onCanvasClicked} onMouseMove={showPreview} ref={container} style={{border: '1px solid blue'}}>
-            {currentDrawingPoints.length && previewPoint && selectedTool && renderShape({id: 'preview', type: selectedTool, points:  previewPoints }, false)}
-            {shapes.map((shape) => renderShape(shape, true))}
-            {editedShape && <EditShape onGrabDragPoint={onGrabDragPoint} onReleaseDragPoint={onReleaseDragPoint} shape={editedShape} />}
-        </svg>
-    </div>
+        <div tabIndex={-1} onKeyDown={handleKeyPresses}>
+            <Toolbar onSelectTool={onSelectTool} selectedTool={selectedTool} />
+            <svg height="400" width="400" onClick={onCanvasClicked} onMouseMove={showPreview} ref={container} style={{border: '1px solid blue'}}>
+                {currentDrawingPoints.length && previewPoint && selectedTool && renderShape({id: 'preview', type: selectedTool, points:  previewPoints }, false)}
+                {shapes.map((shape) => renderShape(shape, true))}
+                {editedShape && <EditShape onGrabDragPoint={onGrabDragPoint} onReleaseDragPoint={onReleaseDragPoint} shape={editedShape} />}
+            </svg>
+        </div>
     );
 }

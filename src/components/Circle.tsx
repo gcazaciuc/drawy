@@ -13,6 +13,6 @@ export const Circle = ({points}: CircleProps) => {
         return null;
     }
 
-    const radius = Math.abs(end[0] - start[0]);
+    const radius = Math.sqrt(Math.pow((end[0] - start[0]),2) + Math.pow(end[1] - start[1], 2));
     return (<circle cx={start[0]} cy={start[1]} r={radius} stroke="red" strokeWidth="3" />)
 }
