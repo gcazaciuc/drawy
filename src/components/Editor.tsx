@@ -3,12 +3,16 @@ import { PEN_TOOL, RECTANGLE_TOOL } from "../constants/constants";
 import { IShape, Point, ShapeType } from "../types/Geometry";
 import { Rectangle } from "./Rectangle";
 import { Shape } from "./Shape";
+import { Circle } from "./Circle";
 import { Toolbar } from "./Toolbar";
+import { CIRCLE_TOOL } from "../constants/constants";
+import { Line } from "./Line";
+import { LINE_TOOL } from "../constants/constants";
 
 
 export const Editor = () => {
     const [currentDrawingPoints, setCurrentDrawingPoints] = useState<ShapeType>([]);
-    const [previewPoint, setPreviewPoint] = useState<Point>([0,0]);
+    const [previewPoint, setPreviewPoint] = useState<Point | null>(null);
     const [shapes, setShapes] = useState<Array<IShape>>([]);
     const [selectedTool, setSelectedTool] = useState(PEN_TOOL)
 
@@ -43,12 +47,12 @@ export const Editor = () => {
                     const newShape = {type: 'path', points: currentDrawingPoints};
                     setShapes((shapes) => shapes.concat(newShape));
                     setCurrentDrawingPoints([]);
-                    setPreviewPoint([0,0]);
+                    setPreviewPoint(null);
                 }
             }
 
             if (selectedTool === RECTANGLE_TOOL) {
-                if (currentDrawingPoints.length < 1) {
+                if (currentDrawingPoints.length < 2) {
                     setCurrentDrawingPoints((points) => {
                         return points.concat([point])
                     });
@@ -56,12 +60,42 @@ export const Editor = () => {
                     const newShape = {type: 'rectangle', points: currentDrawingPoints};
                     setShapes((shapes) => shapes.concat(newShape));
                     setCurrentDrawingPoints([]);
-                    setPreviewPoint([0,0]);
+                    setPreviewPoint(null);
+                }
+            }
+
+            if (selectedTool === CIRCLE_TOOL) {
+                if (currentDrawingPoints.length < 2) {
+                    setCurrentDrawingPoints((points) => {
+                        return points.concat([point])
+                    });
+                } else {
+                    const newShape = {type: 'circle', points: currentDrawingPoints};
+                    setShapes((shapes) => shapes.concat(newShape));
+                    setCurrentDrawingPoints([]);
+                    setPreviewPoint(null);
+                }
+            }
+
+            if (selectedTool === LINE_TOOL) {
+                if (currentDrawingPoints.length < 2) {
+                    setCurrentDrawingPoints((points) => {
+                        return points.concat([point])
+                    });
+                } else {
+                    const newShape = {type: 'line', points: currentDrawingPoints};
+                    setShapes((shapes) => shapes.concat(newShape));
+                    setCurrentDrawingPoints([]);
+                    setPreviewPoint(null);
                 }
             }
     }
 
     const showPreview = (e: any) => {
+        if (!currentDrawingPoints.length) {
+            return;
+        }
+
         const point = getPointInCanvas(e);
         if (!point) {
             return;
@@ -78,6 +112,10 @@ export const Editor = () => {
                 return (<Shape points={shape.points} isClosed={isClosed} />);
             case 'rectangle':
                 return (<Rectangle points={shape.points} />)
+            case 'circle':
+                return (<Circle points={shape.points} />)
+            case 'line':
+                return (<Line points={shape.points} />)
         }
         
     }
@@ -87,17 +125,22 @@ export const Editor = () => {
                 return 'path';
             case RECTANGLE_TOOL:
                 return 'rectangle';
+            case CIRCLE_TOOL:
+                return 'circle';
+            case LINE_TOOL:
+                return 'line';
         }
 
         return '';
     }
+    const previewPoints = previewPoint ? currentDrawingPoints.concat([previewPoint]) : currentDrawingPoints;
     return (
     <div>
         <Toolbar onSelectTool={onSelectTool} />
         <svg height="400" width="400" onClick={onCanvasClicked} onMouseMove={showPreview} ref={container} style={{border: '1px solid blue'}}>
-                {renderShape({type: getCurrentShape(), points: currentDrawingPoints.concat([previewPoint])}, false)}
-                {shapes.map((shape) => renderShape(shape, true))}
-            </svg>
+            {currentDrawingPoints.length && previewPoint && renderShape({type: getCurrentShape(), points:  previewPoints }, false)}
+            {shapes.map((shape) => renderShape(shape, true))}
+        </svg>
     </div>
     );
 }
