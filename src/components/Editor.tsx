@@ -9,6 +9,8 @@ import { Line } from "./Line";
 import pointInPolygon from 'point-in-polygon';
 import pointLineDistance from 'point-line-distance';
 import { EditShape } from "./EditShape";
+import { observer } from "mobx-react";
+import { EditorContext } from "../state/editor/EditorContext";
 
 const pointInCircle = (point: Point, points: Point[]) => {
     const [start, end] = points;
@@ -21,13 +23,19 @@ const pointInCircle = (point: Point, points: Point[]) => {
 const pointInLine = (point: Point, points: Point[]) => {
     return pointLineDistance(point.concat([0]), points[0].concat([0]), points[1].concat([0])) < 5;
 }
-export const Editor = () => {
+
+interface IEditorProps {
+    editorContext: EditorContext;
+}
+
+export const Editor = observer(({ editorContext }: IEditorProps) => {
     const [currentDrawingPoints, setCurrentDrawingPoints] = useState<ShapeType>([]);
     const [previewPoint, setPreviewPoint] = useState<Point | null>(null);
     const [shapes, setShapes] = useState<Array<IShape>>([]);
     const [editedShape, setEditedShape] = useState<IShape | null>(null);
     const [draggedPoint, setDraggedPoint] = useState<number | null>(null);
-    const [selectedTool, setSelectedTool] = useState<string|null>(null)
+    // const [selectedTool, setSelectedTool] = useState<string|null>(null)
+    const selectedTool = editorContext.tool;
     const idCounter = useRef(1);
     const container = useRef<SVGSVGElement>(null);
     const SENSITIVITY = 5;
@@ -53,6 +61,7 @@ export const Editor = () => {
             if (!point) {
                 return;
             }
+            editorContext.handleClick(point);
 
             if (selectedTool !== null) {
                 if (selectedTool === PEN_TOOL) {
@@ -129,7 +138,7 @@ export const Editor = () => {
         setShapes(updatedShapes)
     }
     const onSelectTool = (tool: string) => { 
-       setSelectedTool(tool === selectedTool ? null : tool);
+       editorContext.toolSelected(tool);
     }
 
     const onGrabDragPoint = (idx: number) => {
@@ -141,7 +150,8 @@ export const Editor = () => {
     }
 
     const handleKeyPresses = (e: React.KeyboardEvent) => {
-        console.log('Key pressed', e.key);
+        editorContext.handleKeyPress(e.key);
+
         switch(e.key) {
             case 'Backspace':
                 if (editedShape) {
@@ -180,4 +190,4 @@ export const Editor = () => {
             </svg>
         </div>
     );
-}
+});

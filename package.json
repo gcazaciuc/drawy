@@ -11,6 +11,8 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "classnames": "^2.3.1",
+    "mobx": "^6.3.2",
+    "mobx-react": "^7.2.0",
     "point-in-polygon": "^1.1.0",
     "point-line-distance": "^1.0.0",
     "react": "^17.0.2",
