@@ -1,4 +1,4 @@
-import { makeObservable, observable } from "mobx";
+import { computed, makeObservable, observable } from "mobx";
 import { PEN_TOOL } from "../../constants/constants";
 import { Point } from "../../types/Geometry";
 import { EditorContext } from "./EditorContext";
@@ -16,10 +16,14 @@ export class DrawingShapeState extends EditorState {
         super(editor);
         makeObservable(this, {
             currentDrawingPoints: observable,
+            partialShape: computed,
             previewPoint: observable
         });
     }
-    
+    public get partialShape() {
+        return this.previewPoint ? this.currentDrawingPoints.concat([this.previewPoint]) : this.currentDrawingPoints;
+    }
+
     public handleMouseMove(point: Point) {
         this.previewPoint = point;
     }

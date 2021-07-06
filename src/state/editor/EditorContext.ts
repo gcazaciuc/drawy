@@ -49,12 +49,8 @@ export class EditorContext {
         this.shapes.push(shape);
     }
 
-    public getPreviewPoint() {
-        return this.currentState instanceof DrawingShapeState ? this.currentState.previewPoint : null;
-    }
-
     public getPartialShape() {
-        return this.currentState instanceof DrawingShapeState ? this.currentState.currentDrawingPoints : [];
+        return this.currentState instanceof DrawingShapeState ? this.currentState.partialShape : [];
     }
 
     public getEditedShape() {

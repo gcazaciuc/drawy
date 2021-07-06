@@ -26,16 +26,19 @@ export class InitialCanvasState extends EditorState {
                 case 'path':
                     return pointInPolygon(point, shape.points);
                 case 'rectangle':
+                    const [topLeft, bottomRight] = shape.points;
                     return pointInPolygon(point, [
-                        shape.points[0],
-                        [shape.points[0][0], shape.points[1][1]],
-                        shape.points[1],
-                        [shape.points[1][0], shape.points[0][1]]
+                        topLeft,
+                        [topLeft[0], bottomRight[1]],
+                        bottomRight,
+                        [bottomRight[0], topLeft[1]]
                     ]);
                 case 'circle':
                     return this.pointInCircle(point, shape.points);
                 case 'line':
                     return this.pointInLine(point, shape.points);
+                default:
+                    return false;
             }
         });
         if (selectedShape) {

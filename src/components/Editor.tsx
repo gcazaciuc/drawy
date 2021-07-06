@@ -1,24 +1,25 @@
-import React, { useRef, useState } from "react";
-import { PEN_TOOL } from "../constants/constants";
-import { IShape, Point, ShapeType } from "../types/Geometry";
+import React, { useRef } from "react";
+import { IShape, Point } from "../types/Geometry";
 import { Rectangle } from "./Rectangle";
 import { Shape } from "./Shape";
 import { Circle } from "./Circle";
 import { Toolbar } from "./Toolbar";
 import { Line } from "./Line";
 import { EditShape } from "./EditShape";
+import { GridPattern } from "./GridPattern";
 import { observer } from "mobx-react";
 import { EditorContext } from "../state/editor/EditorContext";
 
 interface IEditorProps {
     editorContext: EditorContext;
+    width?: number;
+    height?: number;
 }
 
-export const Editor = observer(({ editorContext }: IEditorProps) => {
+export const Editor = observer(({ editorContext, width = 400, height = 400 }: IEditorProps) => {
     const shapes = editorContext.shapes;
     const currentDrawingPoints = editorContext.getPartialShape();
     const selectedTool = editorContext.tool;
-    const previewPoint = editorContext.getPreviewPoint();
     const editedShape = editorContext.getEditedShape();
     const container = useRef<SVGSVGElement>(null);
     
@@ -35,14 +36,14 @@ export const Editor = observer(({ editorContext }: IEditorProps) => {
         return point;
     }
     const onCanvasClicked = (e: any) => {
-            const point = getPointInCanvas(e);
-            if (!point) {
-                return;
-            }
-            editorContext.handleClick(point);
+        const point = getPointInCanvas(e);
+        if (!point) {
+            return;
+        }
+        editorContext.handleClick(point);
     }
 
-    const showPreview = (e: any) => {
+    const onCanvasMouseMove = (e: any) => {
         const point = getPointInCanvas(e);
         if (!point) {
             return;
@@ -82,12 +83,12 @@ export const Editor = observer(({ editorContext }: IEditorProps) => {
         
     }
 
-    const previewPoints = previewPoint ? currentDrawingPoints.concat([previewPoint]) : currentDrawingPoints;
     return (
         <div tabIndex={-1} onKeyDown={handleKeyPresses}>
             <Toolbar onSelectTool={onSelectTool} selectedTool={selectedTool} />
-            <svg height="400" width="400" onClick={onCanvasClicked} onMouseMove={showPreview} ref={container} style={{border: '1px solid blue'}}>
-                {currentDrawingPoints.length && previewPoint && selectedTool && renderShape({id: 'preview', type: selectedTool, points:  previewPoints }, false)}
+            <svg height={height} width={width} onClick={onCanvasClicked} onMouseMove={onCanvasMouseMove} ref={container}>
+                <GridPattern />
+                {currentDrawingPoints.length && selectedTool && renderShape({id: 'preview', type: selectedTool, points:  currentDrawingPoints }, false)}
                 {shapes.map((shape) => renderShape(shape, true))}
                 {editedShape && <EditShape onGrabDragPoint={onGrabDragPoint} onReleaseDragPoint={onReleaseDragPoint} shape={editedShape} />}
             </svg>

@@ -1,4 +1,3 @@
-import { useRef, useState } from "react";
 type Point = [number, number];
 interface ShapeProps {
     points: Point[]

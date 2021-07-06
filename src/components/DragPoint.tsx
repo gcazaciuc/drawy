@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { Point } from "../types/Geometry"
 
 interface IDragPointProps {

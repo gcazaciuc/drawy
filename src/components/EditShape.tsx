@@ -9,8 +9,6 @@ interface IEditShapeProps {
 }
 
 export const EditShape = ({children, shape, onGrabDragPoint, onReleaseDragPoint}: IEditShapeProps) => {
-    const onUpdateShapeDragPoint = () => {}
-
     return (<>
        {shape.points.map((p, idx) => (<DragPoint point={p} key={idx} onGrabDragPoint={() => onGrabDragPoint(idx)} onReleaseDragPoint={() => onReleaseDragPoint(idx)}/>))}
     </>)
