@@ -10,10 +10,14 @@ export abstract class EditorState implements IEditorState {
     }
     
     public handleToolSelected(tool: string) {
-
+        this.editor.tool = tool === this.editor.tool ? null : tool;
     }
+    public handleMouseMove(point: Point) {};
+    public grabDragPoint(idx: number) {}
+    public releaseDragPoint() {}
 
     abstract handleClick(point: Point): void;
+
 
     abstract handleKeyPress(keyCode: string): void;
 }
