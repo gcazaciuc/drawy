@@ -5,10 +5,11 @@ import { EditorContext } from "./EditorContext";
 import { EditorState } from "./EditorState";
 import { InitialCanvasState } from "./InitialCanvasState";
 
+let idCounter = 1;
+
 export class DrawingShapeState extends EditorState {
     public currentDrawingPoints: Point[] = [];
     public previewPoint: Point | null = null;
-    private idCounter = 1;
 
     static SENSITIVITY = 5;
 
@@ -69,5 +70,5 @@ export class DrawingShapeState extends EditorState {
         return startingPoint && point && Math.abs(startingPoint[0] - point[0]) < DrawingShapeState.SENSITIVITY && Math.abs(startingPoint[1] - point[1]) < DrawingShapeState.SENSITIVITY;
     }
     private isStandardShapeClosed = () => this.currentDrawingPoints.length >= 1;
-    private uuid = () => `shape_${this.idCounter++}`;
+    private uuid = () => `shape_${idCounter++}`;
 }

@@ -59,7 +59,7 @@ export const Editor = observer(({ editorContext, width = 400, height = 400 }: IE
         editorContext.grabDragPoint(idx);
     }
 
-    const onReleaseDragPoint = (idx: number) => {
+    const onReleaseDragPoint = () => {
         editorContext.releaseDragPoint();
     }
 
@@ -86,11 +86,11 @@ export const Editor = observer(({ editorContext, width = 400, height = 400 }: IE
     return (
         <div tabIndex={-1} onKeyDown={handleKeyPresses}>
             <Toolbar onSelectTool={onSelectTool} selectedTool={selectedTool} />
-            <svg height={height} width={width} onClick={onCanvasClicked} onMouseMove={onCanvasMouseMove} ref={container}>
+            <svg height={height} width={width} onClick={onCanvasClicked} onMouseMove={onCanvasMouseMove} onMouseUp={() => onReleaseDragPoint()} ref={container}>
                 <GridPattern />
                 {currentDrawingPoints.length && selectedTool && renderShape({id: 'preview', type: selectedTool, points:  currentDrawingPoints }, false)}
                 {shapes.map((shape) => renderShape(shape, true))}
-                {editedShape && <EditShape onGrabDragPoint={onGrabDragPoint} onReleaseDragPoint={onReleaseDragPoint} shape={editedShape} />}
+                {editedShape && <EditShape onGrabDragPoint={onGrabDragPoint}  shape={editedShape} />}
             </svg>
         </div>
     );
