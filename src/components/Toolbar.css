@@ -1,3 +1,20 @@
+.toolbar {
+    text-align: right;
+}
+
+.toolbar-btn {
+    background: transparent;
+    color: white;
+    -moz-outline: 0;
+    outline: none;
+    border: 0;
+    line-height: 1;
+    cursor: pointer;
+    text-align: left;
+    margin: 4px 4px;
+    padding: 0;
+}
+
 .active {
     color:aqua
 }

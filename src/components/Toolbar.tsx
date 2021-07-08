@@ -9,17 +9,17 @@ interface ToolbarProps {
 
 export const Toolbar = ({onSelectTool, selectedTool}: ToolbarProps) => {
 
-    const penClass = classnames("toolbar-btn", {"active": selectedTool=== PEN_TOOL});
-    const circleClass = classnames("toolbar-btn", {"active": selectedTool=== CIRCLE_TOOL});
-    const rectangleClass = classnames("toolbar-btn", {"active": selectedTool=== RECTANGLE_TOOL});
-    const lineClass = classnames("toolbar-btn", {"active": selectedTool=== LINE_TOOL});
+    const penClass = classnames("toolbar-btn", "fa", "fa-pencil", {"active": selectedTool=== PEN_TOOL});
+    const circleClass = classnames("toolbar-btn", "fa", "fa-circle-o", {"active": selectedTool=== CIRCLE_TOOL});
+    const rectangleClass = classnames("toolbar-btn", "fa", "fa-square-o", {"active": selectedTool=== RECTANGLE_TOOL});
+    const lineClass = classnames("toolbar-btn", "fa", "fa-minus", {"active": selectedTool=== LINE_TOOL});
 
     return (
         <div className="toolbar">
-            <button className={penClass} onClick={() => onSelectTool(PEN_TOOL)}>Pencil</button>
-            <button className={circleClass} onClick={() => onSelectTool(CIRCLE_TOOL)}>Circle</button>
-            <button className={rectangleClass} onClick={() => onSelectTool(RECTANGLE_TOOL)}>Rectangle</button>
-            <button className={lineClass} onClick={() => onSelectTool(LINE_TOOL)}>Line</button>
+            <i className={penClass} onClick={() => onSelectTool(PEN_TOOL)}></i>
+            <i className={circleClass} onClick={() => onSelectTool(CIRCLE_TOOL)}></i>
+            <i className={rectangleClass} onClick={() => onSelectTool(RECTANGLE_TOOL)}></i>
+            <i className={lineClass} onClick={() => onSelectTool(LINE_TOOL)}></i>
         </div>
     );
 }

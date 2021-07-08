@@ -16,5 +16,5 @@ export const Shape = ({points, isClosed}: ShapeProps) => {
    
     const closeCommand = isClosed ? 'Z' : ''; 
 
-    return (<path d={`${path} ${closeCommand}`} stroke="green" strokeWidth="1" fill="none" />);
+    return (<path d={`${path} ${closeCommand}`} stroke="green" strokeWidth="3" fill="none" />);
 }
